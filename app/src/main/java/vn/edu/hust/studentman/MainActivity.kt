@@ -1,11 +1,13 @@
 package vn.edu.hust.studentman
 
+import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
+import android.view.ViewGroup
 import android.widget.Button
-import androidx.activity.enableEdgeToEdge
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -37,11 +39,31 @@ class MainActivity : AppCompatActivity() {
       StudentModel("Lê Văn Vũ", "SV020")
     )
 
-    val studentAdapter = StudentAdapter(students)
+    val studentAdapter = StudentAdapter(students, this)
 
     findViewById<RecyclerView>(R.id.recycler_view_students).run {
       adapter = studentAdapter
       layoutManager = LinearLayoutManager(this@MainActivity)
     }
+
+    findViewById<Button>(R.id.btn_add_new).setOnClickListener {
+      val dialog = Dialog(this)
+      dialog.setContentView(R.layout.layout_dialog)
+      val editName = dialog.findViewById<EditText>(R.id.name)
+      val editMSSV = dialog.findViewById<EditText>(R.id.mssv)
+      dialog.findViewById<Button>(R.id.okBtn).setOnClickListener {
+        val name = editName.text.toString();
+        val mssv = editMSSV.text.toString();
+        students.add(StudentModel(name, mssv));
+        studentAdapter.notifyDataSetChanged();
+        dialog.dismiss();
+      }
+      dialog.findViewById<Button>(R.id.cancelBtn).setOnClickListener {
+        dialog.dismiss();
+      }
+      dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      dialog.show();
+    }
+
   }
 }
